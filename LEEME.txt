@@ -1,0 +1,26 @@
+ANT EMPIRE - Simulador incremental de hormiguero
+================================================
+
+CÓMO JUGAR
+  Abre index.html con tu navegador (Chrome, Edge, Firefox...). No necesita internet.
+
+CONTROLES
+  Flechas / WASD ..... Mover a la reina (arriba/abajo: trepar por paredes)
+  Espacio ............ Adherirse a paredes y techos
+  E .................. Interactuar con cámaras u hormigas (mantener: excavar junto a una obra)
+  Q .................. Poner huevo (en la Cámara Real o en una Guardería)
+  R .................. Estado de la reina
+  1 2 3 4 ............ Paneles: Excavar, Obreras, Mejoras, Objetivos
+  V / C .............. Vista general del imperio / volver a la reina
+  M .................. Minimapa
+  Rueda del ratón .... Zoom
+  Clic ............... Información de cualquier hormiga o cámara
+  Esc ................ Cerrar paneles / cancelar
+
+GUARDADO
+  La partida se guarda sola cada 10 segundos, tras acciones importantes y al cerrar la página
+  (almacenamiento local del navegador). Desde el menú (engranaje) puedes guardar manualmente,
+  exportar una copia de seguridad (.json) e importarla. Al volver, se calcula la producción offline
+  (máximo 12 horas).
+  Nota: el guardado es propio de cada navegador; si borras los datos del sitio se pierde,
+  por eso conviene exportar copias de vez en cuando.

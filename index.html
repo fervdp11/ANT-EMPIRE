@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ANT EMPIRE</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="loading"><div class="ltitle">ANT EMPIRE</div><div class="lsub">Cargando el hormiguero...</div></div>
+
+<!-- Recursos -->
+<div id="hud-top" class="glass">
+  <div class="res" title="Hojas: alimento básico que traen las recolectoras"><span class="ico big" data-i="leaf"></span><div><b id="rv-leaf">0</b><span id="rr-leaf" class="rate">+0/min</span></div><i class="capbar"><i id="rc-leaf"></i></i></div>
+  <div class="res" title="Hongos: alimento nutritivo cultivado en los jardines"><span class="ico big" data-i="fungus"></span><div><b id="rv-fungus">0</b><span id="rr-fungus" class="rate">+0/min</span></div><i class="capbar"><i id="rc-fungus"></i></i></div>
+  <div class="res" title="Agua"><span class="ico big" data-i="water"></span><div><b id="rv-water">0</b><span id="rr-water" class="rate">+0/min</span></div><i class="capbar"><i id="rc-water"></i></i></div>
+  <div class="res" title="Tierra excavada: material de construcción"><span class="ico big" data-i="soil"></span><div><b id="rv-soil">0</b><span id="rr-soil" class="rate">+0/min</span></div><i class="capbar"><i id="rc-soil"></i></i></div>
+  <div class="sep"></div>
+  <div class="res small" title="Población adulta / capacidad"><span class="ico big" data-i="ant"></span><div><b id="rv-pop">0/0</b><span class="lbl">Población</span></div></div>
+  <div class="res small" title="Cría (huevos, larvas y pupas) / capacidad"><span class="ico big" data-i="egg"></span><div><b id="rv-brood">0/0</b><span class="lbl">Cría</span></div></div>
+  <div class="res small" title="Capacidad de almacenamiento por recurso"><span class="ico big" data-i="home"></span><div><b id="rv-cap">0</b><span class="lbl">Almacén</span></div></div>
+</div>
+<div id="clock" class="glass pill"></div>
+<div id="saved" class="pill">💾 Guardado</div>
+<button id="btn-gear" class="glass round" title="Menú">
+  <svg viewBox="0 0 24 24"><path fill="#f4e8d0" d="M19.4 13c.04-.33.06-.66.06-1s-.02-.67-.06-1l2.1-1.65a.5.5 0 00.12-.64l-2-3.46a.5.5 0 00-.6-.22l-2.49 1a7.3 7.3 0 00-1.73-1l-.38-2.65A.49.49 0 0014 2h-4a.49.49 0 00-.49.42l-.38 2.65c-.63.26-1.2.6-1.73 1l-2.49-1a.5.5 0 00-.6.22l-2 3.46a.49.49 0 00.12.64L4.57 11c-.04.33-.07.67-.07 1s.03.67.07 1l-2.11 1.65a.5.5 0 00-.12.64l2 3.46c.12.22.38.3.6.22l2.49-1c.52.4 1.1.74 1.73 1l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.63-.26 1.2-.6 1.73-1l2.49 1c.22.08.48 0 .6-.22l2-3.46a.5.5 0 00-.12-.64zM12 15.5A3.5 3.5 0 1115.5 12 3.5 3.5 0 0112 15.5z"/></svg>
+</button>
+
+<!-- Objetivo -->
+<div id="obj-box" class="glass" title="Ver objetivos">
+  <div class="oh"><span class="ico" data-i="target"></span><span>Objetivo</span><span id="obj-prog"></span></div>
+  <div id="obj-text"></div>
+  <div class="bar"><i id="obj-bar"></i></div>
+</div>
+<div id="threat" class="glass"></div>
+
+<!-- Barra lateral -->
+<div id="side">
+  <button class="sbtn glass" data-panel="queen" title="Reina (R)"><span class="ico huge" data-i="crown"></span><span>Reina</span></button>
+  <button class="sbtn glass" data-panel="dig" title="Excavar (1)"><span class="ico huge" data-i="pick"></span><span>Excavar</span></button>
+  <button class="sbtn glass" data-panel="workers" title="Obreras (2)"><span class="ico huge" data-i="ant"></span><span>Obreras</span><i id="badge-workers" class="badge">0</i></button>
+  <button class="sbtn glass" data-panel="upgrades" title="Mejoras (3)"><span class="ico huge" data-i="up"></span><span>Mejoras</span></button>
+  <button class="sbtn glass" data-panel="goals" title="Objetivos (4)"><span class="ico huge" data-i="target"></span><span>Objetivos</span></button>
+</div>
+<div id="view-btns">
+  <button id="btn-overview" class="glass round" title="Vista general del imperio (V)"><span class="ico" data-i="eye"></span></button>
+  <button id="btn-center" class="glass round" title="Volver a la reina (C)"><span class="ico" data-i="crown"></span></button>
+  <button id="btn-minimap" class="glass round" title="Minimapa (M)"><span class="ico" data-i="map"></span></button>
+</div>
+
+<!-- Panel lateral -->
+<div id="drawer" class="glass panel">
+  <div class="phead"><h2 id="drawer-title"></h2><button id="drawer-close" class="x">✕</button></div>
+  <div id="drawer-body"></div>
+</div>
+
+<!-- Inspector -->
+<div id="inspector" class="glass card">
+  <button id="insp-close" class="x">✕</button>
+  <div id="insp-body"></div>
+</div>
+
+<div id="prompt" class="pill glass"></div>
+<div id="toasts"></div>
+<div id="place-bar" class="glass">
+  <b>⛏ Coloca: <span id="place-name"></span></b> <span id="place-cost"></span> <span id="place-reason"></span>
+  <span class="ph">Clic: excavar aquí · Arrastrar: mover vista · Rueda: zoom · Clic derecho / Esc: cancelar</span>
+  <button class="btn" onclick="AE.Main.stopPlacing()">Cancelar</button>
+</div>
+
+<!-- Ventanas -->
+<div id="minimap" class="modal"><div class="mbox glass">
+  <div class="phead"><h2>Mapa del hormiguero</h2><button class="x mclose">✕</button></div>
+  <canvas id="mm-canvas" width="760" height="480"></canvas>
+</div></div>
+
+<div id="menu" class="modal"><div class="mbox glass narrow">
+  <div class="phead"><h2>Menú</h2><button class="x mclose">✕</button></div>
+  <div id="menu-info" class="minfo"></div>
+  <button id="m-save" class="btn wide">💾 Guardar partida</button>
+  <button id="m-export" class="btn wide">📤 Exportar copia de seguridad</button>
+  <button id="m-import" class="btn wide">📥 Importar partida desde archivo</button>
+  <button id="m-help" class="btn wide">🎮 Controles y ayuda</button>
+  <div class="mrow"><span>Calidad gráfica</span><div id="quality"><button class="btn" data-q="high">Alta</button><button class="btn" data-q="medium">Media</button><button class="btn" data-q="low">Baja</button></div></div>
+  <button id="m-new" class="btn wide danger">🌱 Nueva partida</button>
+  <p class="hint">La partida se guarda automáticamente cada 10 segundos y al cerrar la página.</p>
+</div></div>
+
+<div id="help" class="modal"><div class="mbox glass">
+  <div class="phead"><h2>Cómo jugar</h2><button class="x mclose">✕</button></div>
+  <div id="help-first"><p class="lead">¡Tu colonia ha nacido! Cuida de tus primeros huevos: en poco tiempo serán obreras.</p></div>
+  <div class="helpgrid">
+    <div><kbd>←</kbd><kbd>→</kbd> Caminar</div>
+    <div><kbd>↑</kbd><kbd>↓</kbd> Trepar por paredes</div>
+    <div><kbd>Espacio</kbd> Adherirse a paredes y techos</div>
+    <div><kbd>E</kbd> Interactuar · mantener: excavar</div>
+    <div><kbd>Q</kbd> Poner huevo (Cámara Real / Guardería)</div>
+    <div><kbd>R</kbd> Estado de la reina</div>
+    <div><kbd>1</kbd>–<kbd>4</kbd> Paneles</div>
+    <div><kbd>V</kbd> Vista general · <kbd>C</kbd> Volver</div>
+    <div><kbd>M</kbd> Minimapa</div>
+    <div><kbd>Rueda</kbd> Zoom · <kbd>Esc</kbd> Cerrar</div>
+  </div>
+  <ul class="tips">
+    <li>Pon huevos con <b>Q</b>. Pasan por huevo → larva → pupa → obrera adulta.</li>
+    <li>Asigna obreras libres en el panel <b>Obreras</b>: recolectoras, excavadoras, nodrizas, exploradoras y soldados. Cada clase tiene un aspecto diferente.</li>
+    <li>Usa <b>Excavar</b> para planificar cámaras nuevas: almacén, guardería, dormitorio, jardín de hongos...</li>
+    <li>La reina necesita comer, beber y descansar: las nodrizas la alimentan en la Cámara Real.</li>
+    <li>Haz clic sobre cualquier hormiga o cámara para ver su información.</li>
+    <li>El juego sigue produciendo mientras no estás. ¡Tu imperio no tiene final!</li>
+  </ul>
+  <button class="btn wide" data-close>¡A jugar!</button>
+</div></div>
+
+<div id="welcome" class="modal"><div class="mbox glass narrow">
+  <div class="phead"><h2>¡Bienvenida de nuevo, majestad!</h2><button class="x mclose">✕</button></div>
+  <div id="welcome-body"></div>
+  <button class="btn wide" data-close>Continuar</button>
+</div></div>
+
+<div id="confirm" class="modal"><div class="mbox glass narrow">
+  <p id="confirm-text"></p>
+  <div class="mrow center"><button id="confirm-yes" class="btn danger">Sí</button><button id="confirm-no" class="btn">No</button></div>
+</div></div>
+
+<div id="intro">
+  <div class="ititle">ANT EMPIRE</div>
+  <div id="introCaption"></div>
+  <button id="introSkip" class="btn">Saltar intro ▸</button>
+</div>
+
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/world.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/economy.js"></script>
+<script src="js/agents.js"></script>
+<script src="js/queen.js"></script>
+<script src="js/render.js"></script>
+<script src="js/decor.js"></script>
+<script src="js/save.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/intro.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // iconos SVG estáticos de la interfaz
+  document.querySelectorAll('[data-i]').forEach(e => { e.innerHTML = AE.UI.icon(e.dataset.i).replace(/^<span class="ico">|<\/span>$/g, ''); });
+</script>
+</body>
+</html>
